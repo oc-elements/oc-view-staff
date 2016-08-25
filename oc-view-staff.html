@@ -1,5 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-data-table/iron-data-table.html">
+<link rel="import" href="../oc-iron-data-table-styles/oc-iron-data-table-styles.html">
+<link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
+
 <!--
 `oc-view-staff`
 Element to facilitate the staff view on the Ordercloud platform
@@ -9,12 +14,38 @@ Element to facilitate the staff view on the Ordercloud platform
 
 <dom-module id="oc-view-staff">
   <template>
-    <style>
+    <style include="oc-iron-data-table-styles">
       :host {
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+
+    <oc-grid-controls data="[[ items ]]" total-count="[[ totalItems ]]" num-entries="[[ pageSize ]]">
+      <iron-data-table
+              id="dataTable"
+              current-page="[[ currentPage ]]"
+              loading="{{ loading }}">
+        <data-table-column name="Name" sort-by="name">
+          <template>[[item.name]]</template>
+        </data-table-column>
+        <data-table-column name="Email" sort-by="email">
+          <template>[[item.email]]</template>
+        </data-table-column>
+        <data-table-column name="Telephone" sort-by="telephone">
+          <template>[[item.telephone]]</template>
+        </data-table-column>
+        <data-table-column name="Actions">
+          <template>
+            <div data-option-object$="[[ item ]]">
+              <paper-button raised id="reset" title="Reset Password"  on-tap="_actionHandler">Reset Password</paper-button>
+              <paper-icon-button icon="delete" id="delete" title="Delete Staff Member"  on-tap="_actionHandler"></paper-icon-button>
+            </div>
+          </template>
+        </data-table-column>
+      </iron-data-table>
+    </oc-grid-controls>
+
+
   </template>
 
   <script>
@@ -23,10 +54,24 @@ Element to facilitate the staff view on the Ordercloud platform
       is: 'oc-view-staff',
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'oc-view-staff',
+        loading: {
+          type: Boolean,
+          notify: true
         },
+        items: Array,
+        totalItems: Number,
+        pageSize: Number,
+        currentPage: Number,
+      },
+
+      _onPageRequest: function(event) {
+        this.fire('page-request', event);
+      },
+
+      _actionHandler: function(e) {
+        var extraObj = JSON.parse(Polymer.dom(e).localTarget.parentElement.getAttribute('data-option-object')),
+                action = e.target.getAttribute('id');
+        this.fire(action, extraObj);
       },
 
     });
