@@ -26,13 +26,13 @@ Element to facilitate the staff view on the Ordercloud platform
               current-page="[[ currentPage ]]"
               loading="{{ loading }}">
         <data-table-column name="Name" sort-by="name">
-          <template>[[item.name]]</template>
+          <template><span>[[item.user.profile.firstName]]</span> <span>[[item.user.profile.surname]]</span></template>
         </data-table-column>
         <data-table-column name="Email" sort-by="email">
-          <template>[[item.email]]</template>
+          <template>[[item.user.profile.email]]</template>
         </data-table-column>
         <data-table-column name="Telephone" sort-by="telephone">
-          <template>[[item.telephone]]</template>
+          <template>[[item.user.profile.cellphoneNumber]]</template>
         </data-table-column>
         <data-table-column name="Actions">
           <template>
